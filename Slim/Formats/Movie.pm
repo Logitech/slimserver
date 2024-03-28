@@ -38,6 +38,9 @@ my %tagMapping = (
 	TMPO => 'BPM',
 	TRKN => 'TRACKNUM',
 	WRT  => 'COMPOSER',
+	WRK  => 'WORK',
+	GRP  => 'GROUPING',
+	'----:com.apple.iTunes:SUBTITLE' => 'SUBTITLE',	
 
 	'MusicBrainz Album Id'     => 'MUSICBRAINZ_ALBUM_ID',
 	'MusicBrainz Album Type'   => 'RELEASETYPE',

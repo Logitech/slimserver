@@ -60,6 +60,7 @@ LiveSearch = {
 					links : {
 						track: new Ext.Template( webroot + 'songinfo.html?player={player}&item={id}'),
 						album: new Ext.Template( webroot + 'clixmlbrowser/clicmd=browselibrary+items&mode=albums&linktitle=' + SqueezeJS.string('album') + '%20({title})&album_id={id}&player={player}/index.html?index=0'),
+						work: new Ext.Template( webroot + 'clixmlbrowser/clicmd=browselibrary+items&mode=works&linktitle=' + SqueezeJS.string('works') + '%20({title})&work_id={id}&from_search={terms}&player={player}/index.html?index=0'),
 						contributor: new Ext.Template( webroot + 'clixmlbrowser/clicmd=browselibrary+items&mode=albums&linktitle=' + SqueezeJS.string('artist') + '%20({title})&artist_id={id}&player={player}/'),
 						search: new Ext.Template( webroot + 'clixmlbrowser/clicmd=browselibrary+items&linktitle=' + SqueezeJS.string('search') + '&mode=search/index.html?player={player}&index={id}&submit=Search&q={title}'),
 						item: new Ext.Template( '<div>{title}<span class="browsedbControls"><img src="' + webroot + 'html/images/b_play.gif" id="play:{id}:{title}" class="livesearch-play">&nbsp;<img src="' + webroot + 'html/images/b_add.gif" id="add:{id}:{title}" class="livesearch-add"></span></div>')
@@ -86,6 +87,9 @@ LiveSearch = {
 							else if (menuItem.contributor_id) {
 								type = 'contributor';
 							}
+							else if (menuItem.work_id) {
+								type = 'work';
+							}
 							else if (menuItem.search_id != null) {
 								type = 'search';
 							}
@@ -95,9 +99,10 @@ LiveSearch = {
 							}
 							
 							location = self.links[type].apply({
-								id: menuItem.track_id || menuItem.album_id || menuItem.contributor_id || menuItem.search_id,
+								id: menuItem.track_id || menuItem.album_id || menuItem.contributor_id || menuItem.work_id || menuItem.search_id,
 								title: encodeURIComponent(menuItem.search_id != null ? input.dom.value : menuItem.title),
-								player: SqueezeJS.getPlayer()
+								player: SqueezeJS.getPlayer(),
+								terms: input.dom.value
 							});
 						},
 						
@@ -209,6 +214,28 @@ LiveSearch = {
 										}, this);
 									}
 									
+									if (result.works_loop) {
+										if (this.searchMenu.items.length > 0)
+											this.searchMenu.addItem('-');
+										
+										this.searchMenu.addItem({
+											text: '<b>' + SqueezeJS.string('works') + '...</b>',
+											icon: '/html/images/b_search.gif',
+											search_id: 2
+										});
+										
+										Ext.each(result.works_loop, function(item, index, allItems) {
+											this.searchMenu.addItem({
+												text: tpl.apply({
+													title: item.work,
+													id: 'work_id:' + item.work_id
+												}),
+												title: item.work,
+												work_id: item.work_id
+											});
+										}, this);
+									}
+									
 									if (result.tracks_loop) {
 										if (this.searchMenu.items.length > 0)
 											this.searchMenu.addItem('-');
@@ -216,7 +243,7 @@ LiveSearch = {
 										this.searchMenu.addItem({
 											text: '<b>' + SqueezeJS.string('songs') + '...</b>',
 											icon: '/html/images/b_search.gif',
-											search_id: 2
+											search_id: 3
 										});
 										
 										Ext.each(result.tracks_loop, function(item, index, allItems) {
@@ -279,7 +306,7 @@ LiveSearch = {
 				}
 			});
 			
-			SqueezeJS.loadStrings(['ARTISTS', 'ARTIST', 'ALBUMS', 'ALBUM', 'SONGS', 'NO_SEARCH_RESULTS', 'SEARCH']);
+			SqueezeJS.loadStrings(['ARTISTS', 'ARTIST', 'ALBUMS', 'ALBUM', 'WORKS', 'SONGS', 'NO_SEARCH_RESULTS', 'SEARCH']);
 		}
 	}
 };

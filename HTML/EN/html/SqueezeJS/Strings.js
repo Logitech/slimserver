@@ -35,6 +35,7 @@ SqueezeJS.Strings['volume'] += '[% stringCOLON %]';
 [% PROCESS jsString id='ALBUM' jsId='' %]
 [% PROCESS jsString id='ARTIST' jsId='' %]
 [% PROCESS jsString id='YEAR' jsId='' %]
+[% PROCESS jsString id='WORKS' jsId='' %]
 
 [% PROCESS jsString id='CLOSE' jsId='' %]
 [% PROCESS jsString id='CANCEL' jsId='' %]

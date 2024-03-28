@@ -69,8 +69,6 @@ my %tagMapping = (
 	'TOTALDISCS'                => 'DISCC',
 );
 
-my @tagNames = (Slim::Schema::Contributor->contributorRoles, qw(ALBUM DISCNUMBER TITLE TRACKNUMBER DATE GENRE));
-
 # peem id (http://flac.sf.net/id.html http://peem.iconoclast.net/)
 my $PEEM = 1885693293;
 

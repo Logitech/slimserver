@@ -13052,6 +13052,15 @@ BROWSE_GENRES
 	RU	Просмотр жанров
 	SV	Bläddra efter genre
 
+BROWSE_WORKS
+	EN	Browse Works
+
+WORKS
+	EN	Works
+
+WORKS_CLASSICAL
+	EN	Classical Works
+
 BROWSE_YEARS
 	CS	Procházet roky
 	DA	Gennemse efter år
@@ -13161,6 +13170,9 @@ BROWSE_BY_SONG_DBL
 	ES	Examinar por canción
 	FR	Morceaux
 	PL	Utwory
+
+BROWSE_BY_WORK
+	EN	Works
 
 BROWSE_BY_YEAR
 	CS	Roky

@@ -1309,7 +1309,6 @@ sub _getPreviewPlaylistName {
 
 sub playlistXitemCommand {
 	my $request = shift;
-
 	# check this is the correct command.
 	if ($request->isNotCommand([['playlist'], ['add', 'append', 'insert', 'insertlist', 'load', 'play', 'resume']])) {
 		$request->setStatusBadDispatch();
@@ -1986,6 +1985,24 @@ sub playlistcontrolCommand {
 
 			return;
 		}
+
+	} elsif (defined(my $work_id = $request->getParam('work_id'))) {
+
+		my $criteria = {work => [ '=' => $work_id ]};
+
+		if (defined (my $album_id = $request->getParam('album_id'))) {
+			$criteria->{'album'} = [ '=' => $album_id ];
+		}
+
+#$log->error("DK request-getParam-grouping=" . Data::Dump::dump($request->getParam('grouping')));
+		if (defined (my $grouping = $request->getParam('grouping'))) {
+			$criteria->{'grouping'} = [ '=' => $grouping ] if $grouping;
+			$criteria->{'grouping'} = [ '=' => undef ] unless $grouping;
+		}
+#$log->error("DK criteria=" . Data::Dump::dump($criteria));
+
+		@tracks = Slim::Schema->search('Track', $criteria)->all;
+#$log->error("DK tracks=" . Data::Dump::dump(@tracks));
 
 	} elsif (defined(my $track_id_list = $request->getParam('track_id'))) {
 
@@ -3317,6 +3334,11 @@ sub _playlistXtracksCommand_parseSearchTerms {
 			$sort = $albumSort;
 			$joinMap{'year'} = 'year';
 
+		} elsif ($key =~ /^work\./) {
+
+			$sort = $albumSort;
+			$joinMap{'work'} = 'work';
+
 		} elsif ($key =~ /^contributor\./) {
 
 			$sort = $albumSort;
@@ -3343,6 +3365,11 @@ sub _playlistXtracksCommand_parseSearchTerms {
 				} else {
 					$find{$key} = { 'like' => Slim::Utils::Text::searchStringSplit($value) };
 				}
+
+			} elsif ( $key eq 'me.grouping' ) {
+#$log->error("DK value=$value");
+
+				$find{$key} = $value || undef;
 
 			} else {
 
@@ -3543,6 +3570,10 @@ sub _playlistXtracksCommand_parseDbItem {
 				if ( $class eq 'LibraryTracks' && $key eq 'library' && $value eq '-1' ) {
 					$classes{$class} = -1;
 				}
+				elsif ( $class eq 'Track' && $key eq 'grouping' ) {
+#$log->error("DK value=$value");
+					$classes{$class} = $value;
+				}
 				# album favorites need to be filtered by contributor, too
 				elsif ($class eq 'Contributor' && (my $albumObj = $classes{Album})) {
 					my $lcClass = lc($class);
@@ -3586,6 +3617,7 @@ sub _playlistXtracksCommand_parseDbItem {
 			$class eq 'Contributor' ||
 			$class eq 'Genre' ||
 			$class eq 'Year' ||
+			$class eq 'Work' ||
 			( blessed $obj && $obj->can('content_type') && $obj->content_type ne 'dir')
 		) ) {
 			$terms .= "&" if ( $terms ne "" );
@@ -3598,8 +3630,14 @@ sub _playlistXtracksCommand_parseDbItem {
 		$terms .= sprintf( 'librarytracks.library=%d', $classes{LibraryTracks} );
 	}
 
+	if ( defined $classes{Track} ) {
+		$terms .= "&" if ( $terms ne "" );
+		$terms .= sprintf( 'track.grouping=%s', URI::Escape::uri_escape_utf8($classes{Track}) );
+	}
+
 	if ( $terms ne "" ) {
-			return _playlistXtracksCommand_parseSearchTerms($client, $terms);
+#$log->error("DK terms=$terms");
+		return _playlistXtracksCommand_parseSearchTerms($client, $terms);
 	}
 	else {
 		return ();

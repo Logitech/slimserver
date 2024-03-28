@@ -73,7 +73,7 @@ sub getTag {
 	my $file  = shift || return {};
 
 	my $s = Audio::Scan->scan($file);
-
+	
 	my $info = $s->{info};
 	my $tags = $s->{tags};
 

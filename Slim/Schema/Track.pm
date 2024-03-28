@@ -29,7 +29,7 @@ our @allColumns = (qw(
 	timestamp added_time updated_time filesize disc remote audio audio_size audio_offset year secs
 	cover cover_cached vbr_scale bitrate samplerate samplesize channels block_alignment endian
 	bpm tagversion drm musicmagic_mixable dlna_profile
-	musicbrainz_id lossless lyrics replay_gain replay_peak extid virtual
+	musicbrainz_id lossless lyrics replay_gain replay_peak extid virtual work subtitle grouping
 ));
 
 {
@@ -47,6 +47,7 @@ our @allColumns = (qw(
 	# setup our relationships
 	$class->belongs_to('album' => 'Slim::Schema::Album');
 	$class->belongs_to('primary_artist'  => 'Slim::Schema::Contributor');
+	$class->belongs_to('work' => 'Slim::Schema::Work');
 
 	$class->has_many('genreTracks'       => 'Slim::Schema::GenreTrack' => 'track');
 	$class->has_many('comments'          => 'Slim::Schema::Comment'    => 'track');
@@ -84,6 +85,10 @@ sub namesort {
 
 sub namesearch {
 	return shift->titlesearch;
+}
+
+sub work {
+	return shift->work;
 }
 
 sub contributors {

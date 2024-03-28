@@ -41,6 +41,7 @@ my %tagMapping = (
 	'BPM'          => 'BPM',
 	'DISCNUMBER'   => 'DISC',
 	'ALBUM ARTIST' => 'ALBUMARTIST', # bug 10724 - support APEv2 Album Artist
+	'SUBTITLE'     => 'SUBTITLE',
 );
 
 # Given a file, return a hash of name value pairs,
