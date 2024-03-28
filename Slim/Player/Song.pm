@@ -12,6 +12,7 @@ use strict;
 use base qw(Slim::Utils::Accessor);
 
 use Fcntl qw(SEEK_CUR SEEK_SET);
+use Clone qw(clone);
 
 use Slim::Utils::Log;
 use Slim::Schema;
@@ -168,7 +169,7 @@ sub clonePlaylistSong {
 	);
 
 	foreach ('handler', @_playlistCloneAttributes) {
-		$new->init_accessor($_ => $old->$_());
+		$new->init_accessor($_ => clone($old->$_()));
 	}
 
 	$_liveCount++;

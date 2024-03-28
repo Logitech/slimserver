@@ -366,6 +366,11 @@ sub _Playing {
 		main::INFOLOG && $log->info("Song " . $last_song->index() . " has now started playing");
 		$last_song->setStatus(Slim::Player::Song::STATUS_PLAYING);
 		$last_song->retryData(undef);	# we are playing so we must be done retrying
+		if ($last_song->currentTrackHandler()->can('onPlay')) {
+			foreach my $player (@{$self->{'players'}}) {
+				$last_song->currentTrackHandler()->onPlay($player, $last_song);
+			}
+		}
 	}
 	
 	# Update a few timestamps
